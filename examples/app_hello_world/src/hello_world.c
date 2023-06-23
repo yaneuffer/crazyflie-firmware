@@ -45,6 +45,6 @@ void appMain() {
 
   while(1) {
     vTaskDelay(M2T(2000));
-    DEBUG_PRINT("Hello World!\n");
+    DEBUG_PRINT("Hello World, cheers from Zürich!\n");
   }
 }
