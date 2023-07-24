@@ -132,6 +132,7 @@ all: $(PROG).hex $(PROG).bin
 	done
 
 include tools/make/targets.mk
+#include /home/student/projects/crazyflie-firmware/tools/make/targets.mk
 
 size:
 	@$(PYTHON) $(srctree)/tools/make/size.py $(SIZE) $(PROG).elf $(MEM_SIZE_FLASH_K) $(MEM_SIZE_RAM_K) $(MEM_SIZE_CCM_K)

@@ -41,7 +41,9 @@
 
 #ifndef CONFIG_H_
 #define CONFIG_H_
-#include "nrf24l01.h"
+#include "/home/student/projects/crazyflie-firmware/src/drivers/interface/nrf24l01.h"
+
+//#include "nrf24l01.h"
 
 #include "trace.h"
 #include "usec_time.h"

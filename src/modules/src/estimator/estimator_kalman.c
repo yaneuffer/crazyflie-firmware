@@ -252,8 +252,8 @@ static void kalmanTask(void* parameters) {
       STATS_CNT_RATE_EVENT(&finalizeCounter);
     }
 
-    if (! kalmanSupervisorIsStateWithinBounds(&coreData)) {
-      resetEstimation = true;
+     if (! kalmanSupervisorIsStateWithinBounds(&coreData)) {
+       resetEstimation = true;
 
       if (nowMs > warningBlockTimeMs) {
         warningBlockTimeMs = nowMs + WARNING_HOLD_BACK_TIME_MS;
