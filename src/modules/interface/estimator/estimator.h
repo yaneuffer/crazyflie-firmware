@@ -56,6 +56,7 @@ typedef enum {
   MeasurementTypeGyroscope,
   MeasurementTypeAcceleration,
   MeasurementTypeBarometer,
+  MeasurementTypeMultiTOF,
 } MeasurementType;
 
 typedef struct
@@ -75,6 +76,7 @@ typedef struct
     gyroscopeMeasurement_t gyroscope;
     accelerationMeasurement_t acceleration;
     barometerMeasurement_t barometer;
+    MultitofMeasurement_t Multitof;
   } data;
 } measurement_t;
 
@@ -126,6 +128,14 @@ static inline void estimatorEnqueueTOF(const tofMeasurement_t *tof)
   measurement_t m;
   m.type = MeasurementTypeTOF;
   m.data.tof = *tof;
+  estimatorEnqueue(&m);
+}
+
+static inline void estimatorEnqueueMultiTOF(const MultitofMeasurement_t *Multitof)
+{
+  measurement_t m;
+  m.type = MeasurementTypeMultiTOF;
+  m.data.Multitof = *Multitof;
   estimatorEnqueue(&m);
 }
 

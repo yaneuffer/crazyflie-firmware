@@ -36,6 +36,7 @@ EVENTTRIGGER(estPose)
 EVENTTRIGGER(estDistance, uint8, id, float, distance)
 EVENTTRIGGER(estTOF)
 EVENTTRIGGER(estAbsoluteHeight)
+EVENTTRIGGER(estMultiTOF)
 EVENTTRIGGER(estFlow)
 EVENTTRIGGER(estYawError, float, yawError)
 EVENTTRIGGER(estSweepAngle, uint8, sensorId, uint8, baseStationId, uint8, sweepId, float, t, float, sweepAngle)
@@ -217,6 +218,10 @@ void estimatorEnqueue(const measurement_t *measurement) {
     case MeasurementTypeTOF:
       // no payload needed, see range.zrange
       eventTrigger(&eventTrigger_estTOF);
+      break;
+    case MeasurementTypeMultiTOF:
+      // no payload needed, see range.zrange
+      eventTrigger(&eventTrigger_estMultiTOF);
       break;
     case MeasurementTypeAbsoluteHeight:
       // no payload needed, see CONFIG_DECK_LOCO_2D_POSITION

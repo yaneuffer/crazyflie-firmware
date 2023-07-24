@@ -306,6 +306,13 @@ typedef struct tofMeasurement_s {
   float stdDev;
 } tofMeasurement_t;
 
+/** MultiTOF measurement**/
+typedef struct MultitofMeasurement_s {
+  uint32_t timestamp;
+  float distance;
+  float stdDev;
+} MultitofMeasurement_t;
+
 /** Absolute height measurement */
 typedef struct heightMeasurement_s {
   uint32_t timestamp;

@@ -23,17 +23,8 @@
  *
  */
 
-#include "mm_MultiTof.h"
-#include "log.h"
-#define DEBUG_MODULE "ESTKALMAN"
-#include "debug.h"
-#include "cfassert.h"
+#pragma once
 
+#include "kalman_core.h"
 
-
-
-
-
-void kalmanCoreUpdateWithMultiTof(kalmanCoreData_t* this, const MultitofMeasurement_t *flow, const Axis3f *gyro) {
-  DEBUG_PRINT("Updated filter with MultiTof \n")
-}
+void kalmanCoreUpdateWithMultiTof(kalmanCoreData_t* this, const MultitofMeasurement_t *flow, const Axis3f *gyro);
