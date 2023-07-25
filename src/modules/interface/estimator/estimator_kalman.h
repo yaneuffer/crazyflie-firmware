@@ -56,6 +56,7 @@
 #include <stdint.h>
 #include "stabilizer_types.h"
 
+
 void estimatorKalmanInit(void);
 bool estimatorKalmanTest(void);
 void estimatorKalman(state_t *state, const stabilizerStep_t stabilizerStep);

@@ -27,4 +27,4 @@
 
 #include "kalman_core.h"
 
-void kalmanCoreUpdateWithMultiTof(kalmanCoreData_t* this, const MultitofMeasurement_t *flow, const Axis3f *gyro);
+void kalmanCoreUpdateWithMultiTof(kalmanCoreData_t* this, const MultitofMeasurement_t *flow);

@@ -30,6 +30,7 @@
 #include <stdbool.h>
 #include "imu_types.h"
 #include "lighthouse_types.h"
+#include "AAParamsYannick.h"
 
 /* Data structure used by the stabilizer subsystem.
  * All have a timestamp to be set when the data is calculated.
@@ -308,8 +309,8 @@ typedef struct tofMeasurement_s {
 
 /** MultiTOF measurement**/
 typedef struct MultitofMeasurement_s {
-  uint32_t timestamp;
-  float distance;
+  //uint32_t timestamp;
+  uint16_t distances[NR_OF_PIXELS * NR_OF_SENSORS];
   float stdDev;
 } MultitofMeasurement_t;
 

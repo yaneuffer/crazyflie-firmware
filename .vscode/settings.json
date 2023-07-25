@@ -10,6 +10,9 @@
         "config.h": "c",
         "mm_tof.h": "c",
         "cmath": "c",
-        "kalman_core.h": "c"
+        "kalman_core.h": "c",
+        "mm_multitof.h": "c",
+        "vl53l0x.h": "c",
+        "math3d.h": "c"
     }
 }

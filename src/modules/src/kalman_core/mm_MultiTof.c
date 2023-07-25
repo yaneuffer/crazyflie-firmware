@@ -28,12 +28,45 @@
 #define DEBUG_MODULE "ESTKALMAN"
 #include "debug.h"
 #include "cfassert.h"
+#
 
 
 
 
+void kalmanCoreUpdateWithMultiTof(kalmanCoreData_t* this, const MultitofMeasurement_t *flow) {
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  //Debug with averages in Each Direction
+  uint16_t averages[NR_OF_SENSORS];
+  
+  for(uint8_t i=0; i<NR_OF_SENSORS; i++){
+    uint16_t temp = 0;
+   
+  for(uint8_t j = 0; j<NR_OF_PIXELS; j++){
+   
+    temp += flow->distances[j + i * NR_OF_PIXELS];
+    averages[i] = temp / NR_OF_PIXELS;
 
-
-void kalmanCoreUpdateWithMultiTof(kalmanCoreData_t* this, const MultitofMeasurement_t *flow, const Axis3f *gyro) {
-  DEBUG_PRINT("Updated filter with MultiTof \n")
+  }
+  }
+  
+  for(uint8_t i=0; i<NR_OF_SENSORS; i++){
+    DEBUG_PRINT("%d: %d", i, averages[i]);
+  }
 }
