@@ -96,6 +96,8 @@ typedef struct {
 
   // Tracks whether an update to the state has been made, and the state therefore requires finalization
   bool isUpdated;
+  bool debug;
+  
 
   uint32_t lastPredictionMs;
   uint32_t lastProcessNoiseUpdateMs;

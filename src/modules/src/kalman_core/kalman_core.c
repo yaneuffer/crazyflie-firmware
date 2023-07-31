@@ -63,6 +63,8 @@
 
 #include "math3d.h"
 #include "static_mem.h"
+#define DEBUG_MODULE ""
+#include "debug.h"
 
 // #define DEBUG_STATE_CHECK
 
@@ -251,6 +253,19 @@ void kalmanCoreScalarUpdate(kalmanCoreData_t* this, arm_matrix_instance_f32 *Hm,
     K[i] = PHTd[i]/HPHR; // kalman gain = (PH' (HPH' + R )^-1)
     this->S[i] = this->S[i] + K[i] * error; // state update
   }
+
+  if(this->debug == 1) {
+    DEBUG_PRINT("KGainMAtrix: ");
+    for(uint8_t i=0; i<KC_STATE_DIM; i++){
+      DEBUG_PRINT("%f ",K[i]);
+    }
+    DEBUG_PRINT("\n");
+    DEBUG_PRINT("State: ");
+    for(uint8_t i=0; i<KC_STATE_DIM; i++){
+      DEBUG_PRINT("%f ",this->S[i]);
+    }
+    DEBUG_PRINT("\n");
+  }
   assertStateNotNaN(this);
 
   // ====== COVARIANCE UPDATE ======
@@ -279,6 +294,7 @@ void kalmanCoreScalarUpdate(kalmanCoreData_t* this, arm_matrix_instance_f32 *Hm,
   assertStateNotNaN(this);
 
   this->isUpdated = true;
+  this->debug = 0;
 }
 
 void kalmanCoreUpdateWithPKE(kalmanCoreData_t* this, arm_matrix_instance_f32 *Hm, arm_matrix_instance_f32 *Km, arm_matrix_instance_f32 *P_w_m, float error)

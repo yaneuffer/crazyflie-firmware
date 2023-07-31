@@ -24,6 +24,8 @@
  */
 
 #include "mm_tof.h"
+#define DEBUG_MODULE ""
+#include "debug.h"
 
 void kalmanCoreUpdateWithTof(kalmanCoreData_t* this, tofMeasurement_t *tof)
 {
@@ -55,7 +57,13 @@ void kalmanCoreUpdateWithTof(kalmanCoreData_t* this, tofMeasurement_t *tof)
 
     h[KC_STATE_Z] = 1 / cosf(angle); // This just acts like a gain for the sensor model. Further updates are done in the scalar update function below
 
+    this->debug = 1;
     // Scalar update
+    DEBUG_PRINT("TOF H Matrix: ");
+    for(uint8_t i=0; i<KC_STATE_DIM; i++){
+      DEBUG_PRINT("%f",h[i]);
+    }
+    DEBUG_PRINT("\n");
     kalmanCoreScalarUpdate(this, &H, measuredDistance-predictedDistance, tof->stdDev);
   }
 }

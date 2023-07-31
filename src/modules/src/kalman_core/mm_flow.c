@@ -76,7 +76,8 @@ void kalmanCoreUpdateWithFlow(kalmanCoreData_t* this, const flowMeasurement_t *f
   } else {
       z_g = this->S[KC_STATE_Z];
   }
-
+  // double x = this->R[2][2];
+  // DEBUG_PRINT("%f",x);
   // ~~~ X velocity prediction and update ~~~
   // predicts the number of accumulated pixels in the x-direction
   float hx[KC_STATE_DIM] = {0};
