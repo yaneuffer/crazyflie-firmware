@@ -309,7 +309,7 @@ typedef struct tofMeasurement_s {
 
 /** MultiTOF measurement**/
 typedef struct MultitofMeasurement_s {
-  //uint32_t timestamp;
+  uint32_t timestamp;
   uint16_t distances[NR_OF_PIXELS * NR_OF_SENSORS];
   float stdDev;
 } MultitofMeasurement_t;

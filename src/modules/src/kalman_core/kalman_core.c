@@ -254,18 +254,18 @@ void kalmanCoreScalarUpdate(kalmanCoreData_t* this, arm_matrix_instance_f32 *Hm,
     this->S[i] = this->S[i] + K[i] * error; // state update
   }
 
-  if(this->debug == 1) {
-    DEBUG_PRINT("KGainMAtrix: ");
-    for(uint8_t i=0; i<KC_STATE_DIM; i++){
-      DEBUG_PRINT("%f ",K[i]);
-    }
-    DEBUG_PRINT("\n");
-    DEBUG_PRINT("State: ");
-    for(uint8_t i=0; i<KC_STATE_DIM; i++){
-      DEBUG_PRINT("%f ",this->S[i]);
-    }
-    DEBUG_PRINT("\n");
-  }
+  // if(this->debug == 1) {
+  //   DEBUG_PRINT("KGainMAtrix: ");
+  //   for(uint8_t i=0; i<KC_STATE_DIM; i++){
+  //     DEBUG_PRINT("%f ",K[i]);
+  //   }
+  //   DEBUG_PRINT("\n");
+  //   DEBUG_PRINT("State: ");
+  //   for(uint8_t i=0; i<KC_STATE_DIM; i++){
+  //     DEBUG_PRINT("%f ",this->S[i]);
+  //   }
+  //   DEBUG_PRINT("\n");
+  // }
   assertStateNotNaN(this);
 
   // ====== COVARIANCE UPDATE ======

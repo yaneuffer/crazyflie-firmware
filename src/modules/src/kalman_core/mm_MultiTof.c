@@ -25,7 +25,7 @@
 
 #include "mm_MultiTof.h"
 #include "log.h"
-#define DEBUG_MODULE "ESTKALMAN"
+#define DEBUG_MODULE ""
 #include "debug.h"
 #include "cfassert.h"
 #
@@ -33,15 +33,15 @@
 
 
 
-void kalmanCoreUpdateWithMultiTof(kalmanCoreData_t* this, const MultitofMeasurement_t *flow) {
+void kalmanCoreUpdateWithMultiTof(kalmanCoreData_t* this, const MultitofMeasurement_t *multitof) {
   
   
   
   
   
   
-  
-  
+ uint32_t timedebug = multitof->timestamp;
+ DEBUG_PRINT("Multitof Timestamp: %d\n", timedebug);
   
   
   
@@ -53,20 +53,20 @@ void kalmanCoreUpdateWithMultiTof(kalmanCoreData_t* this, const MultitofMeasurem
   
   
   //Debug with averages in Each Direction
-  uint16_t averages[NR_OF_SENSORS];
+  // uint16_t averages[NR_OF_SENSORS];
   
-  for(uint8_t i=0; i<NR_OF_SENSORS; i++){
-    uint16_t temp = 0;
+  // for(uint8_t i=0; i<NR_OF_SENSORS; i++){
+  //   uint16_t temp = 0;
    
-  for(uint8_t j = 0; j<NR_OF_PIXELS; j++){
+  // for(uint8_t j = 0; j<NR_OF_PIXELS; j++){
    
-    temp += flow->distances[j + i * NR_OF_PIXELS];
-    averages[i] = temp / NR_OF_PIXELS;
+  //   temp += multitof->distances[j + i * NR_OF_PIXELS];
+  //   averages[i] = temp / NR_OF_PIXELS;
 
-  }
-  }
+  // }
+  // }
   
-  for(uint8_t i=0; i<NR_OF_SENSORS; i++){
-    DEBUG_PRINT("%d: %d", i, averages[i]);
-  }
+  // for(uint8_t i=0; i<NR_OF_SENSORS; i++){
+  //   DEBUG_PRINT("%d: %d", i, averages[i]);
+  // }
 }
