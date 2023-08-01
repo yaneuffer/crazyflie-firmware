@@ -41,8 +41,9 @@ void kalmanCoreUpdateWithMultiTof(kalmanCoreData_t* this, const MultitofMeasurem
   
   
  uint32_t timedebug = multitof->timestamp;
- DEBUG_PRINT("Multitof Timestamp: %d\n", timedebug);
-  
+ //DEBUG_PRINT("Multitof Timestamp: %d\n", timedebug);
+ uint16_t stddev = multitof->stdDev;
+ DEBUG_PRINT("Avg Delta: %d\n", stddev); 
   
   
   
