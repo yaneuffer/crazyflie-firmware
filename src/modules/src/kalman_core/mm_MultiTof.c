@@ -1,27 +1,3 @@
-/**
- * ,---------,       ____  _ __
- * |  ,-^-,  |      / __ )(_) /_______________ _____  ___
- * | (  O  ) |     / __  / / __/ ___/ ___/ __ `/_  / / _ \
- * | / ,--'  |    / /_/ / / /_/ /__/ /  / /_/ / / /_/  __/
- *    +------`   /_____/_/\__/\___/_/   \__,_/ /___/\___/
- *
- * Crazyflie control firmware
- *
- * Copyright (C) 2021 Bitcraze AB
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, in version 3.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
- *
- */
 
 #include "mm_MultiTof.h"
 #include "log.h"
@@ -33,20 +9,68 @@
 
 
 
-void kalmanCoreUpdateWithMultiTof(kalmanCoreData_t* this, const MultitofMeasurement_t *multitof) {
+void kalmanCoreUpdateWithMultiTof(kalmanCoreData_t* this, const MultitofMeasurement_t *multitof,  const Axis3f *gyro) {
+
+float omegax_b = gyro->x * DEG_TO_RAD;
+float omegay_b = gyro->y * DEG_TO_RAD;
+
+//pointing at wall head on, accounting for pitch
+uint64_t dt = multitof->timestampprev - multitof->timestamp;
+
+float h[KC_STATE_DIM] = {0};
+arm_matrix_instance_f32 H = {1, KC_STATE_DIM, h};  
   
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// DEBUG_PRINT("Prev: ");
+ 
+// DEBUG_PRINT("%d ", multitof->timestampprev);
+// DEBUG_PRINT("\n");
+// DEBUG_PRINT("Curr: ");
+ 
+// DEBUG_PRINT("%d ", multitof->timestamp);
+// DEBUG_PRINT("\n");
+   
+//  uint32_t timedebug = multitof->timestamp;
+//  DEBUG_PRINT("Multitof Timestamp: %d\n", timedebug);
+//  uint16_t stddev = multitof->stdDev;
+//  DEBUG_PRINT("Avg Delta: %d\n", stddev); 
   
-  
-  
-  
-  
- uint32_t timedebug = multitof->timestamp;
- //DEBUG_PRINT("Multitof Timestamp: %d\n", timedebug);
- uint16_t stddev = multitof->stdDev;
- DEBUG_PRINT("Avg Delta: %d\n", stddev); 
-  
-  
-  
+// DEBUG_PRINT("Prev: ");
+//  for(uint8_t j = 0; j<NR_OF_PIXELS; j++){
+//       DEBUG_PRINT("%d ", multitof->distancesprev[j]);
+//    }
+// DEBUG_PRINT("\n");
+// DEBUG_PRINT("Curr: ");
+//  for(uint8_t j = 0; j<NR_OF_PIXELS; j++){
+//       DEBUG_PRINT("%d ", multitof->distances[j]);
+//    }
+// DEBUG_PRINT("\n");
   
   
   

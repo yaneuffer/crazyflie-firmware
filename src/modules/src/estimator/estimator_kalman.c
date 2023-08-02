@@ -325,7 +325,7 @@ static void updateQueuedMeasurements(const uint32_t nowMs, const bool quadIsFlyi
         kalmanCoreUpdateWithTof(&coreData, &m.data.tof);
         break;
       case MeasurementTypeMultiTOF:
-        kalmanCoreUpdateWithMultiTof(&coreData, &m.data.Multitof);
+        kalmanCoreUpdateWithMultiTof(&coreData, &m.data.Multitof, &gyroLatest);
         break;
       case MeasurementTypeAbsoluteHeight:
         kalmanCoreUpdateWithAbsoluteHeight(&coreData, &m.data.height);
