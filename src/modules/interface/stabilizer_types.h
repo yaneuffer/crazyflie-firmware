@@ -310,10 +310,10 @@ typedef struct tofMeasurement_s {
 /** MultiTOF measurement**/
 typedef struct MultitofMeasurement_s {
   uint64_t timestamp;
-  uint64_t timestampprev;
-  uint16_t distances[NR_OF_PIXELS * NR_OF_SENSORS];
-  uint16_t distancesprev[NR_OF_PIXELS * NR_OF_SENSORS];
-  float stdDev;
+  uint16_t distancesF[NR_OF_PIXELS];
+  uint16_t distancesR[NR_OF_PIXELS];
+  float stdDevF;
+  float stdDevR;
 } MultitofMeasurement_t;
 
 /** Absolute height measurement */

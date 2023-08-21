@@ -135,7 +135,7 @@ static bool robustTdoa = false;
  * For more information, refer to the paper
  */
 
-NO_DMA_CCM_SAFE_ZERO_INIT static kalmanCoreData_t coreData;
+static kalmanCoreData_t coreData;
 
 /**
  * Internal variables. Note that static declaration results in default initialization (to 0)

@@ -25,7 +25,7 @@
 
 #include "mm_flow.h"
 #include "log.h"
-#define DEBUG_MODULE "ESTKALMAN"
+#define DEBUG_MODULE ""
 #include "debug.h"
 #include "cfassert.h"
 
@@ -41,6 +41,13 @@ static float measuredNY;
 
 void kalmanCoreUpdateWithFlow(kalmanCoreData_t* this, const flowMeasurement_t *flow, const Axis3f *gyro)
 {
+// for(uint8_t i=0; i<3; i++) {
+//   for(uint8_t j=0; j<3; j++) {
+// DEBUG_PRINT("%f  ", this->R[i][j]);
+// }
+// DEBUG_PRINT("\n");
+// }
+// DEBUG_PRINT("\n");
   // Inclusion of flow measurements in the EKF done by two scalar updates
 
   // ~~~ Camera constants ~~~
@@ -76,8 +83,7 @@ void kalmanCoreUpdateWithFlow(kalmanCoreData_t* this, const flowMeasurement_t *f
   } else {
       z_g = this->S[KC_STATE_Z];
   }
-  // double x = this->R[2][2];
-  // DEBUG_PRINT("%f",x);
+
   // ~~~ X velocity prediction and update ~~~
   // predicts the number of accumulated pixels in the x-direction
   float hx[KC_STATE_DIM] = {0};
@@ -88,8 +94,9 @@ void kalmanCoreUpdateWithFlow(kalmanCoreData_t* this, const flowMeasurement_t *f
   // derive measurement equation with respect to dx (and z?)
   hx[KC_STATE_Z] = (Npix * flow->dt / thetapix) * ((this->R[2][2] * dx_g) / (-z_g * z_g));
   hx[KC_STATE_PX] = (Npix * flow->dt / thetapix) * (this->R[2][2] / z_g);
-
+  // DEBUG_PRINT("%f    *    %f\n", hx[KC_STATE_Z], hx[KC_STATE_PX]);
   //First update
+
   kalmanCoreScalarUpdate(this, &Hx, (measuredNX-predictedNX), flow->stdDevX*FLOW_RESOLUTION);
 
 
@@ -104,6 +111,7 @@ void kalmanCoreUpdateWithFlow(kalmanCoreData_t* this, const flowMeasurement_t *f
   hy[KC_STATE_PY] = (Npix * flow->dt / thetapix) * (this->R[2][2] / z_g);
 
   // Second update
+  
   kalmanCoreScalarUpdate(this, &Hy, (measuredNY-predictedNY), flow->stdDevY*FLOW_RESOLUTION);
   
 

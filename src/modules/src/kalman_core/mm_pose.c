@@ -25,6 +25,8 @@
 
 #include "mm_pose.h"
 #include "math3d.h"
+#define DEBUG_MODULE ""
+#include "debug.h"
 
 void kalmanCoreUpdateWithPose(kalmanCoreData_t* this, poseMeasurement_t *pose)
 {
@@ -58,5 +60,6 @@ void kalmanCoreUpdateWithPose(kalmanCoreData_t* this, poseMeasurement_t *pose)
 
     h[KC_STATE_D2] = 1;
     kalmanCoreScalarUpdate(this, &H, err_quat.z, pose->stdDevQuat);
+
   }
 }

@@ -1,2 +1,2 @@
-#define NR_OF_SENSORS 1
-#define NR_OF_PIXELS 16
+#define NR_OF_SENSORS 4
+#define NR_OF_PIXELS 64

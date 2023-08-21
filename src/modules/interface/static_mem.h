@@ -121,7 +121,7 @@
   static const int osSys_ ## NAME ## Length = (LENGTH); \
   static const int osSys_ ## NAME ## ItemSize = (ITEM_SIZE); \
   NO_DMA_CCM_SAFE_ZERO_INIT static uint8_t osSys_ ## NAME ## Storage[(LENGTH) * (ITEM_SIZE)]; \
-  NO_DMA_CCM_SAFE_ZERO_INIT static StaticQueue_t osSys_ ## NAME ## Mgm;
+  static StaticQueue_t osSys_ ## NAME ## Mgm;
 
 /**
  * @brief Creates a queue using static memory
