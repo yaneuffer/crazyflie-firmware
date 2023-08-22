@@ -15,9 +15,11 @@ static uint16_t colAveragesPrevF[8] = {0};
 static uint16_t colAveragesPrevR[8] = {0}; 
 static uint64_t timestampprev = 0;
 float initialbetas[4] = {0};
+float referenceDistances[4] = {0};
+bool initial = 1;
 
 
-void kalmanCoreUpdateWithMultiTofX(kalmanCoreData_t* this, const MultitofMeasurement_t *multitof,  const Axis3f *gyro) {
+void kalmanCoreUpdateWithMultiTofY(kalmanCoreData_t* this, const MultitofMeasurement_t *multitof,  const Axis3f *gyro) {
  
 uint64_t dtx = (multitof->timestamp - timestampprev) / 1000;
 // DEBUG_PRINT("%d  ", timestampprev);
@@ -125,9 +127,54 @@ betaprevR = betaF;
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 //attitude updates
 
-void kalmanCoreUpdateWithMultiTof(kalmanCoreData_t* this, const MultitofMeasurement_t *multitof,  const Axis3f *gyro) {
+void kalmanCoreUpdateWithMultiTofX(kalmanCoreData_t* this, const MultitofMeasurement_t *multitof,  const Axis3f *gyro) {
 
 
 // ////////////////////////////////////////////////Front sensor//////////////////////////////////////////////////////////
@@ -213,6 +260,160 @@ h[KC_STATE_D1] = 0;
 
 h[KC_STATE_D2] = 1;
 kalmanCoreScalarUpdate(this, &H, err_quat.z, 0);
-    
-  
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//absolute distances
+void kalmanCoreUpdateWithMultiTof(kalmanCoreData_t* this, const MultitofMeasurement_t *multitof,  const Axis3f *gyro) {
+ 
+uint64_t dtx = (multitof->timestamp - timestampprev) / 1000;
+// DEBUG_PRINT("%d  ", timestampprev);
+//  DEBUG_PRINT("%d\n", timestampprev);
+// DEBUG_PRINT("*%f  ", multitof->stdDevF);
+// DEBUG_PRINT("*%f  ", multitof->stdDevR);
+
+double dt = dtx / 1000.0f;
+// DEBUG_PRINT("%f\n", dt);
+ // 1000000.0f
+////////////////////////////////////////////////Front sensor//////////////////////////////////////////////////////////
+uint16_t colAveragesF[8]; 
+for(uint8_t i = 0; i < 8; i++) {
+  uint16_t colAv = 0;
+  for(uint8_t j = 0; j < 8; j++) {
+    colAv += multitof->distancesF[i + j * 8];
+  }
+  colAveragesF[i] = colAv / 8;
+}
+
+float rowAveragesF[8]; 
+for(uint8_t i = 0; i < 8; i++) {
+  uint16_t rowAv = 0;
+  for(uint8_t j = 0; j < 8; j++) {
+    rowAv += multitof->distancesF[j + i * 8];
+  }
+  rowAveragesF[i] = rowAv / 8;
+}
+
+
+float currentdistF = ((colAveragesF[3] + colAveragesF[4]) / 2 );
+float prevdistF = ((colAveragesPrevF[3] + colAveragesPrevF[4]) / 2 );
+//only on first stable measurement, check whether consecutive measurements are close enough to be stable
+if(initial == 1 && fabs((currentdistF/prevdistF) - 1) < 0.15){
+  referenceDistances[0] = currentdistF;
+  initial = 0;
+}
+
+DEBUG_PRINT("%f   %f\n", currentdistF, referenceDistances[0]);
+
+float hF[KC_STATE_DIM] = {0};
+arm_matrix_instance_f32 HF = {1, KC_STATE_DIM, hF}; 
+hF[KC_STATE_X] = 1;
+
+
+kalmanCoreScalarUpdate(this, &HF, (referenceDistances[0] - currentdistF)/1000 - this->S[KC_STATE_X], 0);
+
+// kalmanCoreScalarUpdate(this, &HF, 0.08 - this->S[KC_STATE_X], 0);
+
+memcpy(&colAveragesPrevF, colAveragesF, sizeof(uint16_t) * 8);
+
+//////////////////////////////////////////Right sensor//////////////////////////////////////////////////////////
+uint16_t colAveragesR[8]; 
+for(uint8_t i = 0; i < 8; i++) {
+  uint16_t colAv = 0;
+  for(uint8_t j = 0; j < 8; j++) {
+    colAv += multitof->distancesR[i + j * 8];
+  }
+  colAveragesR[i] = colAv / 8;
+}
+
+float rowAveragesR[8]; 
+for(uint8_t i = 0; i < 8; i++) {
+  uint16_t rowAv = 0;
+  for(uint8_t j = 0; j < 8; j++) {
+    rowAv += multitof->distancesR[j + i * 8];
+  }
+  rowAveragesR[i] = rowAv / 8;
+}
+
+
+
+
+float currentdistR = ((colAveragesR[3] + colAveragesR[4]) / 2 );
+float prevdistF = ((colAveragesPrevF[3] + colAveragesPrevF[4]) / 2 );
+//only on first stable measurement, check whether consecutive measurements are close enough to be stable
+if(initial == 1 && fabs((currentdistF/prevdistF) - 1) < 0.15){
+  referenceDistances[0] = currentdistF;
+  initial = 0;
+}
+
+
+float hR[KC_STATE_DIM] = {0};
+arm_matrix_instance_f32 HR = {1, KC_STATE_DIM, hR}; 
+hR[KC_STATE_Y] = 1;
+
+
+
+kalmanCoreScalarUpdate(this, &HR, (referenceDistances[3] - currentdistR)/1000 - this->S[KC_STATE_Y], 0);
+
+memcpy(&colAveragesPrevR, colAveragesR, sizeof(uint16_t) * 8);
+
+
+//Final changes
+ timestampprev = multitof->timestamp;
+
 }
