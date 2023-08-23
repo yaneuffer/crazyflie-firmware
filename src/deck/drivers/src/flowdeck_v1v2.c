@@ -67,7 +67,7 @@ static bool isInit2 = false;
 motionBurst_t currentMotion;
 
 // Disables pushing the flow measurement in the EKF
-static bool useFlowDisabled = true;
+static bool useFlowDisabled = false;
 
 // Turn on adaptive standard deviation for the kalman filter
 static bool useAdaptiveStd = false;
