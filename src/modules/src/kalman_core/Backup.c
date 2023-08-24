@@ -161,8 +161,7 @@ betaprevR = betaF;
 
 
 
-void kalmanCoreUpdateWithMultiTofC(kalmanCoreData_t* this, const MultitofMeasurement_t *multitof,  const Axis3f *gyro) {
-}
+
 
 
 
@@ -182,7 +181,7 @@ void kalmanCoreUpdateWithMultiTofC(kalmanCoreData_t* this, const MultitofMeasure
 
 //attitude updates
 
-void kalmanCoreUpdateWithMultiTof(kalmanCoreData_t* this, const MultitofMeasurement_t *multitof,  const Axis3f *gyro) {
+void kalmanCoreUpdateWithMultiTofX(kalmanCoreData_t* this, const MultitofMeasurement_t *multitof,  const Axis3f *gyro) {
 
 
 // ////////////////////////////////////////////////Front sensor//////////////////////////////////////////////////////////
@@ -201,8 +200,6 @@ for(uint8_t i = 0; i < 8; i++) {
   colAveragesF[i] = colAv / (8 - numInvalid);
     }
 }
-
-
 // find the leftmost and rightmost valid column index, store left in v[0], right in v[1]
 uint8_t v[2] = {10, 10};
 for(uint8_t i = 0; i < 8; i++) {
@@ -212,32 +209,18 @@ if(colAveragesF[i] != 0) {
 }
 }
 for(int8_t i = 7; i >= 0; i--) {
-  if(colAveragesF[i] != 0) {
-    v[1] = i;
-    break;
-  }
+if(colAveragesF[i] != 0) {
+  v[1] = i;
+  break;
 }
-
-
-//no gaps in between relevant outside columns, else invalid
-if(v[0] != 10) {
-  for(uint8_t i = v[0] + 1; i < v[1]; i++){
-    if (colAveragesF[i] == 0) {
-      v[0] = 10;
-      v[1] = 10;
-    }
-  }
 }
-
-
 //want at least 4 valid columns for angle, otherwise set 10,10 for invalid
 if(v[1] - v[0] < 3) {
   v[0] = 10;
   v[1] = 10;
   }
- DEBUG_PRINT("%d   %d\n", v[0], v[1]);
+  DEBUG_PRINT("%d   %d   ", v[0], v[1]);
 
-//set sensor inactive if measurement is invalid
 if(v[0] == 10) {
   active[0] = false;
   }
@@ -250,12 +233,9 @@ if(v[0] == 10) {
 //   }
 //   rowAveragesF[i] = rowAv / 8;
 // }
-
-//angle computation, if measurement valid
 float betaF;
 if(v[0] != 10) {
 betaF = RAD_TO_DEG * -atanf((tanf(alphas[v[0]]) * colAveragesF[v[0]] - tanf(alphas[v[1]]) * colAveragesF[v[1]]) / (colAveragesF[v[1]] - colAveragesF[v[0]]));
-  
 
 if(betaF > 0) {betaF = fabs(betaF - 90);}
 else {betaF = -(90 + betaF);}
@@ -263,36 +243,29 @@ else {betaF = -(90 + betaF);}
 else{
 betaF = betaprevF;
 }
-
-float currentyaw = RAD_TO_DEG*(quat2rpy(mkquat(this->q[1], this->q[2], this->q[3], this->q[0])).z);
-
-//set new reference at first acceptable measurement after period of invalid ones, set sensor active again
+//set new reference at first acceptable measurement after period of invalid ones
 if(active[0] == false && v[0] != 10) {
-initialbetas[0] = betaF;
+initialbetas[0] == betaF;
 active[0] = true;
 //extract current yaw from EKF
 referenceYawKalmanF = RAD_TO_DEG*(quat2rpy(mkquat(this->q[1], this->q[2], this->q[3], this->q[0])).z);
 }
-
-DEBUG_PRINT("%f    %f   %f  %f\n", betaF, initialbetas[0], referenceYawKalmanF, currentyaw);
 
 //ignore outliers
 if(fabs((betaF - betaprevF)) > 20){
   betaF = betaprevF;
 }
 
+DEBUG_PRINT("%f    ", betaF);
 //same as beta but y axis
 
 // float gammaF = -atanf((tanf(alphas[0]) * rowAveragesF[0] - tanf(alphas[7]) * rowAveragesF[7]) / (rowAveragesF[7] - rowAveragesF[0]));
 
 memcpy(&colAveragesPrevF, colAveragesF, sizeof(uint16_t) * 8);
 betaprevF = betaF;
-//startup, set reference after 10th measurement as first couple are often useless
 if(iterations == 10){
   initialbetas[0] = betaF;
 }
-
-
 //////////////////////////////////////////Right sensor//////////////////////////////////////////////////////////
 uint16_t colAveragesR[8]; 
 for(uint8_t i = 0; i < 8; i++) {
@@ -309,10 +282,7 @@ for(uint8_t i = 0; i < 8; i++) {
   colAveragesR[i] = colAv / (8 - numInvalid);
     }
 }
-
-
-
-// find the leftmost and rightmost valid column index, store left in b[0], right in b[1]
+// find the leftmost and rightmost valid column index, store left in v[0], right in v[1]
 uint8_t b[2] = {10, 10};
 for(uint8_t i = 0; i < 8; i++) {
 if(colAveragesR[i] != 0) {
@@ -326,49 +296,92 @@ if(colAveragesR[i] != 0) {
   break;
 }
 }
-//need at least two valid columns for angle, otherwise set 10,10 for invalid
-if(b[0] == b[1]) {
+//want at least 4 valid columns for angle, otherwise set 10,10 for invalid
+if(b[1] - b[0] < 3) {
   b[0] = 10;
   b[1] = 10;
   }
-// DEBUG_PRINT("%d   %d\n", b[0], b[1]);
+//  DEBUG_PRINT("%d   %d   ", v[0], v[1]);
 
-// float rowAveragesR[8]; 
+if(b[0] == 10) {
+  active[3] = false;
+  }
+
+// float rowAveragesF[8]; 
 // for(uint8_t i = 0; i < 8; i++) {
 //   uint16_t rowAv = 0;
 //   for(uint8_t j = 0; j < 8; j++) {
-//     rowAv += multitof->distancesR[j + i * 8];
+//     rowAv += multitof->distancesF[j + i * 8];
 //   }
-//   rowAveragesR[i] = rowAv / 8;
+//   rowAveragesF[i] = rowAv / 8;
 // }
 float betaR;
 if(b[0] != 10) {
-betaR = atanf((tanf(alphas[b[0]]) * colAveragesR[b[0]] - tanf(alphas[b[1]]) * colAveragesR[b[1]]) / (colAveragesR[b[1]] - colAveragesR[b[0]]));
+betaR = RAD_TO_DEG * -atanf((tanf(alphas[b[0]]) * colAveragesR[b[0]] - tanf(alphas[b[1]]) * colAveragesR[b[1]]) / (colAveragesR[b[1]] - colAveragesR[b[0]]));
+
 if(betaR > 0) {betaR = fabs(betaR - 90);}
 else {betaR = -(90 + betaR);}
 }
 else{
+betaR = betaprevR;
+}
+//set new reference at first acceptable measurement after period of invalid ones
+if(active[3] == false && b[0] != 10) {
+initialbetas[3] == betaR;
+active[3] = true;
+//extract current yaw from EKF
+referenceYawKalmanR = RAD_TO_DEG*(quat2rpy(mkquat(this->q[1], this->q[2], this->q[3], this->q[0])).z);
+}
+
+//ignore outliers
+if(fabs((betaR - betaprevR)) > 20){
   betaR = betaprevR;
 }
+
+// DEBUG_PRINT("%f\n", betaF);
 //same as beta but y axis
-// float gammaR = -atanf((tanf(alphas[0]) * rowAveragesR[0] - tanf(alphas[7]) * rowAveragesR[7]) / (rowAveragesR[7] - rowAveragesR[0]));
+
+// float gammaF = -atanf((tanf(alphas[0]) * rowAveragesF[0] - tanf(alphas[7]) * rowAveragesF[7]) / (rowAveragesF[7] - rowAveragesF[0]));
 
 memcpy(&colAveragesPrevR, colAveragesR, sizeof(uint16_t) * 8);
 betaprevR = betaR;
+if(iterations == 10){
+  initialbetas[3] = betaR;
+}
   
 ////////////////////////////////////////Attitude Computation//////////////////////////////////////////////////////
 
 float currentRollKalman = (quat2rpy(mkquat(this->q[1], this->q[2], this->q[3], this->q[0])).x);
 float currentPitchKalman = (quat2rpy(mkquat(this->q[1], this->q[2], this->q[3], this->q[0])).y);
-float currentYawKalman = (quat2rpy(mkquat(this->q[1], this->q[2], this->q[3], this->q[0])).z);
+
+
+
+
+// Switch from one sensor to the other if the currently active one return an invalid measurement
+if(inUse == 0 && active[0] == false && active[3] == true) {
+inUse = 3;
+initialbetas[3] = betaR;
+referenceYawKalmanR = RAD_TO_DEG*(quat2rpy(mkquat(this->q[1], this->q[2], this->q[3], this->q[0])).z);
+} 
+if(inUse == 3 && active[3] == false && active[0] == true) {
+inUse = 0;
+initialbetas[0] = betaF;
+referenceYawKalmanF = RAD_TO_DEG*(quat2rpy(mkquat(this->q[1], this->q[2], this->q[3], this->q[0])).z);
+} 
+
+// DEBUG_PRINT("%d   %d     %d\n", active[0], active[1], inUse);
+DEBUG_PRINT("%d\n", inUse);
 
 struct vec measurement;
-if (active[0] == true) {
-  measurement = mkvec(currentRollKalman, currentPitchKalman, DEG_TO_RAD*(betaF - initialbetas[0] + referenceYawKalmanF));
+
+if(inUse == 0) {
+measurement = mkvec(currentRollKalman, currentPitchKalman, DEG_TO_RAD*(betaF - initialbetas[0] + referenceYawKalmanF));
 }
-else {
-  measurement = mkvec(currentRollKalman, currentPitchKalman, currentYawKalman);
+
+if(inUse == 3) {
+measurement = mkvec(currentRollKalman, currentPitchKalman, DEG_TO_RAD*(betaR - initialbetas[3] + referenceYawKalmanR));
 }
+
 // DEBUG_PRINT("%f   %f   %d\n", betaF, initialbetas[0], iterations);
 struct quat measurementq = rpy2quat(measurement);
 // compute orientation error
@@ -453,8 +466,9 @@ kalmanCoreScalarUpdate(this, &H, err_quat.z, 0);
 
 
 
+
 //absolute distances
-void kalmanCoreUpdateWithMultiTofX(kalmanCoreData_t* this, const MultitofMeasurement_t *multitof,  const Axis3f *gyro) {
+void kalmanCoreUpdateWithMultiTof(kalmanCoreData_t* this, const MultitofMeasurement_t *multitof,  const Axis3f *gyro) {
  
 uint64_t dtx = (multitof->timestamp - timestampprev) / 1000;
 // DEBUG_PRINT("%d  ", timestampprev);
